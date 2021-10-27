@@ -116,6 +116,7 @@ header .logo {
 .filtering ul {
     gap: 100px;
     margin-inline-start: 220px;
+    margin-inline-end: 100px;
 }
 
 .filtering ul li {
@@ -163,8 +164,6 @@ header .logo {
 }
 
 .canvas {
-    height: 550px;
-    width: 550px;
     border: 1px solid black;
 }
 
@@ -180,16 +179,26 @@ header .logo {
 }
 
 .text-input {
-    grid-column: 1/span 5;
+    grid-column: 1/span 4;
+    font-size: 20px;
+}
+
+.font-increase-btn {
+    grid-row: 3;
+    grid-column: 1;
+}
+
+.font-decrease-btn {
+    grid-column: 2;
 }
 
 .align-left-btn {
     grid-row: 4;
-    grid-column: 1;
+    grid-column: 2;
 }
 
 .align-center-btn {
-    grid-column: 2;
+    grid-column: 3;
 }
 
 .fonts-selector {

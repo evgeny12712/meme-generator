@@ -1,6 +1,7 @@
 'use strict';
 renderGallery();
-var gCanvas = document.querySelector('.canvas');
+var gElCanvas;
+var gCtx;
 var gCurrImage;
 
 function renderGallery() {
@@ -13,18 +14,17 @@ function renderGallery() {
         </form>
         <ul class="clear-list flex space-between">
             <li>funny</li>
-            <li>comics</li>
-            <li>dogs</li>
-            <li>drinks</li>
-            <li>books</li>
+            <li>shocked</li>
+            <li>animals</li>
+            <li>children</li>
+            <li>listening</li>
         </ul>
-        <a href="#" class='more-filters'>more...</a>
     </div> `;
 
     strHtmls += `<div class="gallery">`;
 
     strHtmls += images.map(image => {
-        return `<img class="gallery-image" src="images/gallery/${image}.jpg" onclick="renderCanvas(this)" />`
+        return `<img class="gallery-image" data-id="${image.id}" src="${image.url}" onclick="renderCanvas(this)" />`
     }).join('');
 
     strHtmls += `</div>`;
@@ -42,21 +42,19 @@ function renderGallery() {
             </div>
         </div>
     </section>`;
-
     document.querySelector('.main-container').innerHTML = strHtmls;
 }
 
-function renderCanvas(image) {
-    console.log('image', image.src);
+function renderCanvas(elImage) {
     var strHtmls = `
     <main class="main-canvas flex space-between">
-        <canvas class="canvas"></canvas>
+        <canvas class="canvas" height="450" width="450"></canvas>
         <div class="control">
-            <input class="text-input" type="text" placeholder="Enter text">
+            <input id="text-input" class="text-input" type="text" placeholder="Enter text" autofocus>
+            <button class="add-text-btn" onclick="onAddText()"><img src="images/canvas-controllers/add.png"></button>
             <button class="up-down-arrows-btn"><img src="images/canvas-controllers/up-and-down-opposite-double-arrows-side-by-side.png"/></button>
             <button class="up-btn"><img src="images/canvas-controllers/up-arrow.png"/></button>
             <button class="down-btn"><img src="images/canvas-controllers/down-arrow.png"/></button>
-            <button class="add-text-btn"><img src="images/canvas-controllers/add.png"></button>
             <button class="delete-btn"><img src="images/canvas-controllers/trash.png"></button>
             <button class="font-increase-btn"><img src="images/canvas-controllers/increase font - icon.png"></button>
             <button class="font-decrease-btn"><img src="images/canvas-controllers/decrease font - icon.png"></button>
@@ -76,12 +74,31 @@ function renderCanvas(image) {
     </main>
     `
     document.querySelector('.main-container').innerHTML = strHtmls;
+    gElCanvas = document.querySelector('.canvas');
+    gCtx = gElCanvas.getContext('2d');
+    var image = getImageById(+elImage.dataset.id);
+    drawImgFromlocal(image.url);
+    gCurrImage = image;
 }
 
-function drawImgFromlocal() {
-    var img = new Image()
-    img.src = 'img/1.jpg';
+function drawImgFromlocal(imageUrl) {
+    const img = new Image()
+    img.src = imageUrl;
     img.onload = () => {
-        gCtx.drawImage(img, 0, 0, gCanvas.width, gCanvas.height) //img,x,y,xend,yend
+        gCtx.drawImage(img, 0, 0, gElCanvas.width, gElCanvas.height) //img,x,y,xend,yend
     }
 }
+
+function onAddText() {
+    var elTextInput = document.querySelector('.text-input');
+    const text = elTextInput.value;
+    elTextInput.value = '';
+    drawText(text);
+    updateMeme(gCurrImage, text);
+}
+
+document.addEventListener("keyup", function(event) {
+    if (event.code === 'Enter') {
+        onAddText();
+    }
+});
