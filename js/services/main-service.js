@@ -37,7 +37,8 @@ function drawText(txt) {
     gCtx.lineWidth = 2;
     gCtx.strokeStyle = 'black';
     gCtx.fillStyle = 'white';
-    gCtx.font = '40px Impact';
+    if (!gMeme.lines.length) gCtx.font = '40px Impact';
+    else gCtx.font = gMeme.lines[gMeme.lines.length - 1].font;
     gCtx.fillText(txt, 225, y);
     gCtx.strokeText(txt, 225, y);
 }

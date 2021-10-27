@@ -3,9 +3,11 @@ renderGallery();
 var gElCanvas;
 var gCtx;
 var gCurrImage;
+var gIsOnCanvas;
+var gElImage;
 
 function renderGallery() {
-    var images = getImages();
+    const images = getImages();
     var strHtmls = `
     <div class="filtering flex space-between">
         <form>
@@ -43,10 +45,11 @@ function renderGallery() {
         </div>
     </section>`;
     document.querySelector('.main-container').innerHTML = strHtmls;
+    gIsOnCanvas = false;
 }
 
 function renderCanvas(elImage) {
-    var strHtmls = `
+    const strHtmls = `
     <main class="main-canvas flex space-between">
         <canvas class="canvas" height="450" width="450"></canvas>
         <div class="control">
@@ -56,8 +59,8 @@ function renderCanvas(elImage) {
             <button class="up-btn"><img src="images/canvas-controllers/up-arrow.png"/></button>
             <button class="down-btn"><img src="images/canvas-controllers/down-arrow.png"/></button>
             <button class="delete-btn"><img src="images/canvas-controllers/trash.png"></button>
-            <button class="font-increase-btn"><img src="images/canvas-controllers/increase font - icon.png"></button>
-            <button class="font-decrease-btn"><img src="images/canvas-controllers/decrease font - icon.png"></button>
+            <button class="font-increase-btn" onclick="onFontInc()"><img src="images/canvas-controllers/increase font - icon.png"></button>
+            <button class="font-decrease-btn" onclick="onFontDec()"><img src="images/canvas-controllers/decrease font - icon.png"></button>
             <button class="text-stroke-btn"><img src="images/canvas-controllers/text-stroke.png"></button>
             <button class="font-color-btn"><img src="images/canvas-controllers/paint-board-and-brush.png"></button>
             <button class="align-left-btn"><img src="images/canvas-controllers/align-to-left.png"></button>
@@ -76,9 +79,14 @@ function renderCanvas(elImage) {
     document.querySelector('.main-container').innerHTML = strHtmls;
     gElCanvas = document.querySelector('.canvas');
     gCtx = gElCanvas.getContext('2d');
-    var image = getImageById(+elImage.dataset.id);
-    drawImgFromlocal(image.url);
-    gCurrImage = image;
+    if (!elImage) drawImgFromlocal(gCurrImage.url);
+    else {
+        console.log('elImage', elImage);
+        var image = getImageById(+elImage.dataset.id);
+        drawImgFromlocal(image.url);
+        gCurrImage = image;
+        gIsOnCanvas = true;
+    }
 }
 
 function drawImgFromlocal(imageUrl) {
@@ -86,6 +94,7 @@ function drawImgFromlocal(imageUrl) {
     img.src = imageUrl;
     img.onload = () => {
         gCtx.drawImage(img, 0, 0, gElCanvas.width, gElCanvas.height) //img,x,y,xend,yend
+        if (gMeme.lines.length) drawText(gMeme.lines[gMeme.lines.length - 1].txt);
     }
 }
 
@@ -93,12 +102,22 @@ function onAddText() {
     var elTextInput = document.querySelector('.text-input');
     const text = elTextInput.value;
     elTextInput.value = '';
-    drawText(text);
     updateMeme(gCurrImage, text);
+    drawText(text);
+}
+
+function onFontInc() {
+    var mem = getMem();
+    var oldFontArray = mem.lines[mem.lines.length - 1].font.split(' ');
+    var fontSize = +oldFontArray[0].substring(0, oldFontArray[0].length - 2);
+    var newSize = ++fontSize;
+    var newFont = newSize + 'px ' + oldFontArray[1];
+    mem.lines[mem.lines.length - 1].font = newFont;
+    renderCanvas();
 }
 
 document.addEventListener("keyup", function(event) {
-    if (event.code === 'Enter') {
+    if (event.code === 'Enter' && gIsOnCanvas) {
         onAddText();
     }
 });
