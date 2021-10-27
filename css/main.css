@@ -1,3 +1,182 @@
+@font-face {
+    font-family: montserrat-regular;
+    src: url(../fonts/Montserrat-Regular.ttf);
+}
+
+@font-face {
+    font-family: montserrat-bold;
+    src: url(..fonts/Montserrat-Bold.ttf);
+}
+
+@font-face {
+    font-family: montserrat-thin;
+    src: url(../fonts/Montserrat-Thin.ttf);
+}
+
+@font-face {
+    font-family: montserrat-medium;
+    src: url(../fonts/Montserrat-Medium.ttf);
+}
+
+* {
+    box-sizing: border-box;
+    font-family: montserrat-regular;
+}
+
 body {
-    background-color: red;
+    margin: 0;
+}
+
+header {
+    background-color: #ff7f00;
+    height: 50px;
+    align-items: center;
+}
+
+nav ul li a {
+    font-size: .9375rem;
+    text-decoration: none;
+    color: white;
+}
+
+nav {
+    margin-inline-end: 50px;
+}
+
+header ul {
+    display: flex;
+    flex-direction: row;
+    gap: 50px;
+}
+
+
+/* helpers */
+
+.clear-list {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+.logo {
+    height: 20px;
+}
+
+header .logo {
+    margin-inline-start: 24.5px;
+}
+
+.flex {
+    display: flex;
+}
+
+.space-between {
+    justify-content: space-between;
+}
+
+
+/* sections */
+
+.filtering {
+    flex-direction: row;
+    height: 100px;
+}
+
+.filtering form {
+    display: flex;
+    height: 22px;
+    align-self: center;
+    margin-inline-start: 50px;
+    border-bottom: 1px solid black;
+}
+
+.filtering form input {
+    font-family: montserrat-medium;
+    border: 0;
+}
+
+.filtering form input:focus {
+    outline: none;
+}
+
+.filtering form img {
+    height: 15px;
+    margin: 0;
+    cursor: pointer;
+}
+
+.filtering ul {
+    gap: 100px;
+    margin-inline-start: 220px;
+}
+
+.filtering ul li {
+    cursor: pointer;
+    align-self: center;
+    font-size: 30px;
+}
+
+.more-filters {
+    align-self: center;
+    margin-inline-end: 100px;
+}
+
+.images-container {
+    background-color: #e3e3e3;
+    padding-block-start: 20px;
+    padding-block-end: 20px;
+    display: grid;
+    justify-content: center;
+    white-space: 50px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 300px));
+    gap: 50px;
+}
+
+.images-container img {
+    width: 300px;
+}
+
+.about-me {
+    margin: 80px auto;
+    height: 250px;
+    width: 700px;
+    gap: 80px;
+    padding-block-end: 300px;
+}
+
+.my-image {
+    width: 300px;
+    height: 250px;
+    border-radius: 50%;
+}
+
+.social-buttons button {
+    background-color: #ff7f00;
+    padding: 5px;
+    width: 50px;
+    border-radius: 10px;
+    border: 0;
+    cursor: pointer;
+}
+
+.social-buttons button:hover {
+    color: #ff7f00
+}
+
+.footer {
+    height: 200px;
+    background-color: #ff7f00;
+    text-align: center;
+}
+
+.footer .logo {
+    margin-top: 70px;
+}
+
+.footer div {
+    font-family: montserrat-thin;
+    margin-block-start: 0;
+    font-size: 18px;
+    color: white;
+    opacity: 0.5;
 }
