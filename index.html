@@ -10,49 +10,50 @@
 </head>
 
 <body>
-    <header class="flex space-between">
+    <header class="header flex space-between">
         <img class="logo" src="images/logo.png">
-        <nav>
+        <nav class="nav">
             <ul class="clear-list flex">
-                <li><a href="#">Gallery</a></li>
+                <li><a href="#" onclick="renderGallery()">Gallery</a></li>
                 <li><a href="#">About</a></li>
             </ul>
         </nav>
     </header>
 
-    <div class="filtering flex space-between">
-        <form>
-            <input type="text" placeholder="Enter search keyword">
-            <img src="images/search-icon.png" alt="" class="search-img" onclick="search()" />
-        </form>
-        <ul class="clear-list flex space-between">
-            <li>funny</li>
-            <li>comics</li>
-            <li>dogs</li>
-            <li>drinks</li>
-            <li>books</li>
-        </ul>
-        <a href="#" class='more-filters'>more...</a>
-    </div>
-
-    <main class="images-container">
-    </main>
-
-    <section class="about-me flex">
-        <img class="my-image" src="images/me.jpg" />
-        <div class="my-about-me">
-            <h4>Evgeny Mashkevich</h4>
-            <p>is a fictional character, one of the six main characters who appears on the American sitcom Friends (1994 –2004). Created by David Crane and Marta Kauffman</p>
-            <div class="social-buttons">
-                <button class="linkedin"><img src="images/social-media/linkedin.png"/></button>
-                <button class="facebook"><img src="images/social-media/facebook.png"/></button>
-                <button class="github"><img src="images/social-media/github.png"/></button>
-            </div>
+    <main class="main-container">
+        <div class="filtering flex space-between">
+            <form>
+                <input type="text" placeholder="Enter search keyword">
+                <img src="images/search-icon.png" alt="" class="search-img" onclick="search()" />
+            </form>
+            <ul class="clear-list flex space-between">
+                <li>funny</li>
+                <li>comics</li>
+                <li>dogs</li>
+                <li>drinks</li>
+                <li>books</li>
+            </ul>
+            <a href="#" class='more-filters'>more...</a>
         </div>
-    </section>
+        <div class="gallery">
+
+        </div>
+        <section class="about-me flex">
+            <img class="my-image" src="images/me.jpg" />
+            <div class="my-about-me">
+                <h4>Evgeny Mashkevich</h4>
+                <p>is a fictional character, one of the six main characters who appears on the American sitcom Friends (1994 –2004). Created by David Crane and Marta Kauffman</p>
+                <div class="social-buttons">
+                    <button class="linkedin"><img src="images/social-media/linkedin.png"/></button>
+                    <button class="facebook"><img src="images/social-media/facebook.png"/></button>
+                    <button class="github"><img src="images/social-media/github.png"/></button>
+                </div>
+            </div>
+        </section>
+    </main>
     <footer class="footer">
         <img class="logo" src="images/logo.png">
-        <div>all rights reserved 2021</div>
+        <div class="rights">all rights reserved 2021</div>
     </footer>
     <script src="js/services/main-service.js"></script>
     <script src="js/main-controller.js"></script>
