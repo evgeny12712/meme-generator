@@ -1,6 +1,4 @@
 'use strict';
-var gImages = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18'];
-
 var gImgs = [{ id: 1, url: 'images/gallery/trump.jpg', keywords: ['funny'] },
     { id: 2, url: 'images/gallery/alittle-bit.jpg', keywords: ['funny'] },
     { id: 3, url: 'images/gallery/baby-puppy.jpg', keywords: ['children', 'animals'] },
@@ -26,26 +24,13 @@ function getImages() {
     return gImgs;
 }
 
-
 function getImageById(id) {
     return gImgs.find(image => id === image.id);
 }
 
-function drawText(txt) {
-    var y = getY();
-    gCtx.textAlign = "center";
-    gCtx.lineWidth = 2;
-    gCtx.strokeStyle = 'black';
-    gCtx.fillStyle = 'white';
-    if (!gMeme.lines.length) gCtx.font = '40px Impact';
-    else gCtx.font = gMeme.lines[gMeme.lines.length - 1].font;
-    gCtx.fillText(txt, 225, y);
-    gCtx.strokeText(txt, 225, y);
-}
-
 function getY() {
     var numOfLines = getMem().lines.length;
-    if (!numOfLines) return 80;
-    else if (numOfLines === 1) return 400;
+    if (numOfLines < 1) return 90;
+    else if (numOfLines < 2) return 400;
     else return 225;
 }
