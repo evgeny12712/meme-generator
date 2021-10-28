@@ -211,6 +211,21 @@ header .logo {
     padding: 10px;
 }
 
+.mark-checkbox {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+    font-family: impact;
+    font-size: 1.25rem;
+    text-align: center;
+    font-weight: bold;
+}
+
+.mark-checkbox input {
+    width: 100px;
+}
+
 
 /* about-me */
 

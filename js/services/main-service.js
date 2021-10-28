@@ -29,10 +29,8 @@ function getImageById(id) {
 }
 
 function drawTexts() {
-    var lines = getLines();
-    for (var i = 0; i < lines.length; i++) {
-        drawText(lines[i]);
-    }
+    const lines = getLines();
+    lines.forEach((line) => drawText(line));
 }
 
 function getY() {

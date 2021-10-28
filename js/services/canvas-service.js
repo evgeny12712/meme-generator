@@ -31,8 +31,8 @@ function drawImgFromlocal(imageUrl) {
     const img = new Image()
     img.src = imageUrl;
     img.onload = () => {
-        ctx.drawImage(img, 0, 0, elCanvas.width, elCanvas.height) //img,x,y,xend,yend
+        ctx.drawImage(img, 0, 0, elCanvas.width, elCanvas.height); //img,x,y,xend,yend
         drawTexts();
-        if (getLines().length) drawRect();
+        if (getLines().length && isMarkChecked()) drawRect();
     }
 }

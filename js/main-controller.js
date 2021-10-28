@@ -4,7 +4,6 @@ var gElCanvas;
 var gCtx;
 var gCurrImage;
 var gIsOnCanvas;
-var gElImage;
 
 function renderGallery() {
     const images = getImages();
@@ -63,10 +62,14 @@ function renderCanvas(elImage) {
             <button class="font-increase-btn" onclick="onFontSizeChange(true)"><img src="images/canvas-controllers/increase font - icon.png"></button>
             <button class="font-decrease-btn" onclick="onFontSizeChange(false)"><img src="images/canvas-controllers/decrease font - icon.png"></button>
             <input type='color' class="font-color-btn" value = "#FFFFFF"/>
+            <div class="mark-checkbox">
+                <label for="mark-check">Mark Line</label>
+                <input type="checkbox" class="mark-check" id="mark-check" name="mark-check" onchange="onMarkToggle(this)"checked>
+            </div>
             <button class="align-left-btn" onclick="onAlign('left')"><img src="images/canvas-controllers/align-to-left.png"></button>
             <button class="align-center-btn" onclick="onAlign('center')"><img src="images/canvas-controllers/center-text-alignment.png"></button>
             <button class="align-right-btn" onclick="onAlign('right')"><img src="images/canvas-controllers/align-to-right.png"></button>
-            <a href="#" class="download-btn" onclick="downloadCanvas(this)" download="myphoto" ><img src="images/canvas-controllers/download.png"></a>
+            <a href="#" class="download-btn" onclick="downloadCanvas(this)" download="myMeme" ><img src="images/canvas-controllers/download.png"></a>
             <select class="fonts-selector" id="fonts">
                 <option value="Impact">Impact</option>
                 <option value="Arial">Arial</option>
@@ -102,8 +105,7 @@ function onAddText() {
 function onFontSizeChange(isIncrease) {
     var oldFontArray = getCurrLine().font.split(' ');
     var fontSize = +oldFontArray[0].substring(0, oldFontArray[0].length - 2);
-    if (isIncrease) fontSize++;
-    else fontSize--;
+    fontSize = (isIncrease) ? fontSize + 1 : fontSize - 1;
     const newFont = fontSize + 'px ' + oldFontArray[1];
     getCurrLine().font = newFont;
     drawImgFromlocal(gCurrImage.url)
@@ -116,7 +118,7 @@ function onMoveText(isUp) {
     const y = currLine.currPosition.y;
     const x = currLine.currPosition.x;
     updateMemeLocation(x, y);
-    drawImgFromlocal(gCurrImage.url, gMeme.lines[gMeme.lines.length - 1].currPosition);
+    drawImgFromlocal(gCurrImage.url);
 }
 
 function onSwitchLine() {
@@ -127,7 +129,6 @@ function onAlign(align) {
     if (!getCurrLine()) return;
     var currLine = getCurrLine();
     var canvasWidth = document.getElementById('canvas').width;
-    console.log('canvasWidth', canvasWidth);
     switch (align) {
         case 'left':
             currLine.currPosition.x = canvasWidth / 11.25;
@@ -151,12 +152,20 @@ function onDeleteLine() {
     lines.splice(getMeme().selectedLineIdx, 1);
     drawImgFromlocal(gCurrImage.url);
     updateCurrLine();
+}
 
+function onMarkToggle(checkbox) {
+    if (checkbox.checked) drawImgFromlocal(gCurrImage.url);
+    else drawImgFromlocal(gCurrImage.url);
 }
 
 function downloadCanvas(elLink) {
     const data = gElCanvas.toDataURL();
     elLink.href = data;
+}
+
+function isMarkChecked() {
+    return document.querySelector('.mark-check').checked;
 }
 
 function getContext() {
