@@ -28,9 +28,20 @@ function getImageById(id) {
     return gImgs.find(image => id === image.id);
 }
 
+function drawTexts() {
+    var lines = getLines();
+    for (var i = 0; i < lines.length; i++) {
+        drawText(lines[i]);
+    }
+}
+
 function getY() {
-    var numOfLines = getMem().lines.length;
+    var numOfLines = getMeme().lines.length;
     if (numOfLines < 1) return 90;
     else if (numOfLines < 2) return 400;
     else return 225;
+}
+
+function getCurrFontSize() {
+    return +getCurrLine().font.split('p')[0];
 }

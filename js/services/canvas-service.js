@@ -1,6 +1,5 @@
 'use strict';
 
-
 function drawText(currLine) {
     if (!currLine) var currLine = getCurrLine();
     const ctx = getContext();
@@ -11,6 +10,19 @@ function drawText(currLine) {
     ctx.font = currLine.font;
     ctx.fillText(currLine.txt, currLine.currPosition.x, currLine.currPosition.y);
     ctx.strokeText(currLine.txt, currLine.currPosition.x, currLine.currPosition.y);
+    getCurrColor();
+}
+
+function drawRect() {
+    const currLine = getCurrLine();
+    const x = 20;
+    const y = currLine.currPosition.y - getCurrFontSize() - 10;
+    var ctx = getContext();
+    ctx.textAlign = 'center';
+    ctx.beginPath();
+    ctx.rect(x, y, 400, getCurrFontSize() + 20);
+    ctx.strokeStyle = 'black';
+    ctx.stroke();
 }
 
 function drawImgFromlocal(imageUrl) {
@@ -21,12 +33,6 @@ function drawImgFromlocal(imageUrl) {
     img.onload = () => {
         ctx.drawImage(img, 0, 0, elCanvas.width, elCanvas.height) //img,x,y,xend,yend
         drawTexts();
-    }
-}
-
-function drawTexts() {
-    var lines = getLines();
-    for (var i = 0; i < lines.length; i++) {
-        drawText(lines[i]);
+        if (getLines().length) drawRect();
     }
 }
