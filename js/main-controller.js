@@ -83,7 +83,7 @@ function renderCanvas(elImage) {
     </main>
     `
     document.querySelector('.main-container').innerHTML = strHtmls;
-    gElCanvas = document.querySelector('.canvas');
+    gElCanvas = document.getElementById('canvas');
     gCtx = gElCanvas.getContext('2d');
 
     var image = getImageById(+elImage.dataset.id);
@@ -184,8 +184,33 @@ function getCurrColor() {
     return document.querySelector('.font-color-btn').value;
 }
 
+function getCurrImage() {
+    return gCurrImage;
+}
+
 document.addEventListener("keyup", function(event) {
     if (event.code === 'Enter' && gIsOnCanvas) {
         onAddText();
+    }
+});
+
+document.addEventListener("keydown", function(event) {
+    if (event.code === 'ArrowUp' && gIsOnCanvas) {
+        onMoveText(true);
+    }
+    if (event.code === 'ArrowDown' && gIsOnCanvas) {
+        onMoveText(false);
+    }
+});
+
+document.addEventListener("keydown", function(event) {
+    const currLine = getCurrLine();
+    if (event.code === 'ArrowRight' && gIsOnCanvas) {
+        if (currLine.align === 'left') onAlign('center');
+        else onAlign('right');
+    }
+    if (event.code === 'ArrowLeft' && gIsOnCanvas) {
+        if (currLine.align === 'right') onAlign('center');
+        else onAlign('left');
     }
 });
