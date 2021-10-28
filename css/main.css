@@ -265,8 +265,13 @@ header .logo {
     html {
         font-size: 10px;
     }
+    .header {
+        /* max-width: 840px; */
+        width: 100%;
+    }
     /* filtering */
     .filtering {
+        max-width: 840px;
         flex-direction: column;
         justify-content: center;
     }
@@ -274,26 +279,20 @@ header .logo {
         margin-inline-start: 0;
     }
     .filtering ul {
-        margin-inline-end: 0;
+        margin-inline-end: 20px;
     }
     .filtering ul li {
-        font-size: 20px;
+        font-size: 10px;
     }
     /* gallery */
     .gallery {
         margin-block-start: 10px;
         margin-block-end: 10px;
-        display: grid;
-        justify-content: center;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 200px));
-        gap: 10px;
+        grid-template-columns: repeat(auto-fill, minmax(130px, 130px));
+        gap: 30px;
     }
     .gallery-image {
-        width: 200px;
-    }
-    .my-image {
-        width: 250px;
-        height: 210px;
+        width: 130px;
     }
     /* about-me */
     .about-me {
