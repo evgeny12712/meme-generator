@@ -4,6 +4,7 @@ var gElCanvas;
 var gCtx;
 var gCurrImage;
 var gIsOnCanvas;
+var gIsNewLine = true;
 
 function renderGallery() {
     const images = getImages();
@@ -53,8 +54,8 @@ function renderCanvas(elImage) {
     <main class="main-canvas flex">
         <canvas id="canvas" class="canvas" height="450" width="450"></canvas>
         <div class="control">
-            <input id="text-input" class="text-input" type="text" placeholder="Enter text" autofocus>
-            <button class="add-text-btn" onclick="onAddText()"><img src="images/canvas-controllers/add.png"></button>
+            <input id="text-input" class="text-input" type="text"" placeholder="Enter text" autofocus>
+            <button class="add-text-btn" onclick="onSubmit()"><img src="images/canvas-controllers/add.png"></button>
             <button class="up-down-arrows-btn" onclick="onSwitchLine()"><img src="images/canvas-controllers/up-and-down-opposite-double-arrows-side-by-side.png"/></button>
             <button class="up-btn" onclick="onMoveText(true)"><img src="images/canvas-controllers/up-arrow.png"/></button>
             <button class="down-btn" onclick="onMoveText(false)"><img src="images/canvas-controllers/down-arrow.png"/></button>
@@ -83,6 +84,7 @@ function renderCanvas(elImage) {
     </main>
     `
     document.querySelector('.main-container').innerHTML = strHtmls;
+    document.querySelector('.text-input').addEventListener('input', onAddText);
     gElCanvas = document.getElementById('canvas');
     gCtx = gElCanvas.getContext('2d');
 
@@ -92,14 +94,27 @@ function renderCanvas(elImage) {
     gIsOnCanvas = true;
 }
 
-function onAddText() {
-    var elTextInput = document.querySelector('.text-input');
-    const text = elTextInput.value;
-    if (!text) return;
-    elTextInput.value = '';
-    updateMeme(gCurrImage, text, { x: 225, y: getY() });
-    updateCurrLine();
-    drawText();
+function updateValue(e) {
+    log.textContent = e.target.value;
+}
+
+function onAddText(e) {
+    const text = e.target.value;
+    const currLine = getCurrLine();
+    if (gIsNewLine) {
+        updateMeme(gCurrImage, text, { x: 225, y: getY() });
+        updateCurrLine();
+        gIsNewLine = false;
+    } else {
+        currLine.txt = text;
+    }
+    drawImgFromlocal(gCurrImage.url)
+}
+
+function onSubmit() {
+    var elInput = document.querySelector('.text-input');
+    elInput.value = '';
+    gIsNewLine = true;
 }
 
 function onFontSizeChange(isIncrease) {
@@ -113,8 +128,8 @@ function onFontSizeChange(isIncrease) {
 
 function onMoveText(isUp) {
     var currLine = getCurrLine();
-    if (isUp) currLine.currPosition.y -= 1;
-    else currLine.currPosition.y += 1;
+    if (isUp) currLine.currPosition.y -= 3;
+    else currLine.currPosition.y += 3;
     const y = currLine.currPosition.y;
     const x = currLine.currPosition.x;
     updateMemeLocation(x, y);
@@ -214,3 +229,8 @@ document.addEventListener("keydown", function(event) {
         else onAlign('left');
     }
 });
+
+
+function updateValue() {
+    console.log('true')
+}
