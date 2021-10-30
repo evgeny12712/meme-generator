@@ -7,12 +7,12 @@ var gMeme = {
     lines: []
 }
 
-function createLine(txt = "", currPosition = { x: 225, y: 90 }, font = '40px ' + getCurrFont(), color = getCurrColor(), align = "center") {
-    return { txt, currPosition, font, color, align };
-}
-
-function updateMeme(image, text = "", currPosition = { x: 225, y: 90 }, font = '40px ' + getCurrFont(), color = getCurrColor(), align = "center") {
-    gMeme.lines.push(createLine(text, currPosition, font, color, align, currPosition));
+function updateMeme(image, txt = "",
+    currPosition = { x: getCanvas().width / 2, y: getCanvas().height / 5 },
+    font = '40px ' + getCurrFont(),
+    color = getCurrColor(),
+    align = "center") {
+    gMeme.lines.push({ txt, currPosition, font, color, align });
     gMeme.selectedImgId = image.id;
 }
 

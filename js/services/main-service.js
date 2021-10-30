@@ -35,16 +35,16 @@ function drawTexts() {
 
 function getY() {
     var numOfLines = getMeme().lines.length;
-    if (numOfLines < 1) return 90;
-    else if (numOfLines < 2) return 400;
-    else return 225;
+    if (numOfLines < 1) return getCanvas().width / 5;
+    else if (numOfLines < 2) return getCanvas().width / 1.125;
+    else return getCanvas().width / 2;
 }
 
 function getCurrFontSize() {
     return +getCurrLine().font.split('p')[0];
 }
 
-function isOutCanvas(x, y) {
+function isOutCanvas(y) {
     var fontSize = +getCurrLine().font.split('p')[0];
-    return x - fontSize - 5 < 0 || y - fontSize + 5 < 0 || x + fontSize > getCanvas().width || y > getCanvas().height;
+    return y - fontSize + 5 < 0 || y > getCanvas().height;
 }

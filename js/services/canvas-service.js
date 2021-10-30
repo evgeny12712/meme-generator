@@ -17,6 +17,7 @@ function drawRect() {
     var ctx = getContext();
     const currLine = getCurrLine();
     const fontSize = getCurrFontSize();
+    ctx.font = currLine.font;
     const x = (currLine.currPosition.x - ctx.measureText(currLine.txt).width / 2) - fontSize / 8;
     const y = currLine.currPosition.y - getCurrFontSize();
     const textWidth = ctx.measureText(currLine.txt).width + fontSize / 4;
@@ -32,8 +33,9 @@ function drawImgFromlocal() {
     const img = new Image()
     img.src = gCurrImage.url;
     img.onload = () => {
-        ctx.drawImage(img, 0, 0, elCanvas.width, elCanvas.height); //img,x,y,xend,yend
-        drawTexts();
-        if (getLines().length && isMarkChecked()) drawRect();
-    }
+            ctx.drawImage(img, 0, 0, elCanvas.width, elCanvas.height); //img,x,y,xend,yend
+            drawTexts();
+            if (getLines().length && isMarkChecked()) drawRect();
+        }
+        // resizeCanvas();
 }

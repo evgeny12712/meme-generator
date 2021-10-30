@@ -3,14 +3,16 @@ var gElCanvas;
 var gCtx;
 var gCurrImage;
 var gIsOnCanvas;
-var gIsNewLine = true;
-var gIsDrag = false;
+var gIsNewLine
+var gIsDrag
 var gStartPos;
 const gTouchEvs = ['touchstart', 'touchmove', 'touchend']
 
 
 function init() {
     renderGallery();
+    gIsNewLine = true;
+    gIsDrag = false;
 }
 
 
@@ -61,9 +63,11 @@ function renderGallery() {
 function renderCanvas(elImage) {
     const strHtmls = `
     <main class="main-canvas flex">
-        <canvas id="canvas" class="canvas" height="450" width="450"></canvas>
+        <div class="canvas-container">
+            <canvas id="canvas" class="canvas" height="450" width="450"></canvas>
+        </div>
         <div class="control">
-            <input id="text-input" class="text-input" type="text"" placeholder="Enter text" autofocus>
+            <input id="text-input" class="text-input" type="text"" placeholder="Enter text" onfocusout="onSubmit()" autofocus>
             <button class="add-text-btn" onclick="onSubmit()"><img src="images/canvas-controllers/add.png"></button>
             <button class="up-down-arrows-btn" onclick="onSwitchLine()"><img src="images/canvas-controllers/up-and-down-opposite-double-arrows-side-by-side.png"/></button>
             <button class="up-btn" onclick="onMoveText(true)"><img src="images/canvas-controllers/up-arrow.png"/></button>
@@ -96,13 +100,12 @@ function renderCanvas(elImage) {
     document.querySelector('.text-input').addEventListener('input', onAddText);
     gElCanvas = document.getElementById('canvas');
     gCtx = gElCanvas.getContext('2d');
-
-    gCurrImage = getImageById(+elImage.dataset.id);
+    if (elImage) gCurrImage = getImageById(+elImage.dataset.id);
+    resizeCanvas();
     drawImgFromlocal();
     gIsOnCanvas = true;
     addMouseListeners()
     addTouchListeners()
-
 }
 
 
@@ -111,7 +114,7 @@ function onAddText(e) {
     const text = e.target.value;
     const currLine = getCurrLine();
     if (gIsNewLine) {
-        updateMeme(gCurrImage, text, { x: 225, y: getY() });
+        updateMeme(gCurrImage, text, { x: getCanvas().width / 2, y: getY() });
         updateCurrLine();
         gIsNewLine = false;
     } else {
@@ -137,12 +140,12 @@ function onFontSizeChange(isIncrease) {
 
 function onMoveText(isUp) {
     var currLine = getCurrLine();
-    if (isOutCanvas(currLine.currPosition.x, currLine.currPosition.y)) return;
+    if (isOutCanvas(currLine.currPosition.y)) return;
     if (isUp) {
-        if (isOutCanvas(currLine.currPosition.x, currLine.currPosition.y - 3)) return;
+        if (isOutCanvas(currLine.currPosition.y - 3)) return;
         currLine.currPosition.y -= 3;
     } else {
-        if (isOutCanvas(currLine.currPosition.x, currLine.currPosition.y + 3)) return;
+        if (isOutCanvas(currLine.currPosition.y + 3)) return;
         currLine.currPosition.y += 3;
     }
     const y = currLine.currPosition.y;
@@ -227,7 +230,7 @@ function getCurrImage() {
 ///---LISTENERS---///
 document.addEventListener("keyup", function(event) {
     if (event.code === 'Enter' && gIsOnCanvas) {
-        onAddText();
+        onSubmit();
     }
 });
 
@@ -251,6 +254,12 @@ document.addEventListener("keydown", function(event) {
         else onAlign('left');
     }
 });
+
+window.addEventListener('resize', () => {
+    resizeCanvas();
+    renderCanvas();
+})
+
 
 function addMouseListeners() {
     gElCanvas.addEventListener('mousemove', onMove)
@@ -317,4 +326,11 @@ function isLineClicked(mousePos, line) {
     const isXGood = mousePos.x >= linePos.x - textWidth / 2 && mousePos.x <= linePos.x + textWidth / 2;
     const isYGood = mousePos.y >= linePos.y - getCurrFontSize() && mousePos.y <= linePos.y;
     return (isXGood && isYGood);
+}
+
+
+function resizeCanvas() {
+    const elContainer = document.querySelector('.canvas-container')
+    gElCanvas.width = elContainer.offsetWidth
+    gElCanvas.height = elContainer.offsetHeight
 }
