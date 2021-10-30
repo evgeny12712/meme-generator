@@ -43,3 +43,8 @@ function getY() {
 function getCurrFontSize() {
     return +getCurrLine().font.split('p')[0];
 }
+
+function isOutCanvas(x, y) {
+    var fontSize = +getCurrLine().font.split('p')[0];
+    return x - fontSize - 5 < 0 || y - fontSize + 5 < 0 || x + fontSize > getCanvas().width || y > getCanvas().height;
+}

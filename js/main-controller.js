@@ -1,11 +1,20 @@
 'use strict';
-renderGallery();
 var gElCanvas;
 var gCtx;
 var gCurrImage;
 var gIsOnCanvas;
 var gIsNewLine = true;
+var gIsDrag = false;
+var gStartPos;
+const gTouchEvs = ['touchstart', 'touchmove', 'touchend']
 
+
+function init() {
+    renderGallery();
+}
+
+
+///---RENDERING---///
 function renderGallery() {
     const images = getImages();
     var strHtmls = `
@@ -70,7 +79,7 @@ function renderCanvas(elImage) {
             <button class="align-left-btn" onclick="onAlign('left')"><img src="images/canvas-controllers/align-to-left.png"></button>
             <button class="align-center-btn" onclick="onAlign('center')"><img src="images/canvas-controllers/center-text-alignment.png"></button>
             <button class="align-right-btn" onclick="onAlign('right')"><img src="images/canvas-controllers/align-to-right.png"></button>
-            <a href="#" class="download-btn" onclick="downloadCanvas(this)" download="myMeme" ><img src="images/canvas-controllers/download.png"></a>
+            <a href="#" class="download-btn" onclick="onDownloadCanvas(this)" download="myMeme" ><img src="images/canvas-controllers/download.png"></a>
             <select class="fonts-selector" id="fonts">
                 <option value="Impact">Impact</option>
                 <option value="Arial">Arial</option>
@@ -88,16 +97,16 @@ function renderCanvas(elImage) {
     gElCanvas = document.getElementById('canvas');
     gCtx = gElCanvas.getContext('2d');
 
-    var image = getImageById(+elImage.dataset.id);
-    drawImgFromlocal(image.url);
-    gCurrImage = image;
+    gCurrImage = getImageById(+elImage.dataset.id);
+    drawImgFromlocal();
     gIsOnCanvas = true;
+    addMouseListeners()
+    addTouchListeners()
+
 }
 
-function updateValue(e) {
-    log.textContent = e.target.value;
-}
 
+///---BUTTONS---///
 function onAddText(e) {
     const text = e.target.value;
     const currLine = getCurrLine();
@@ -108,7 +117,7 @@ function onAddText(e) {
     } else {
         currLine.txt = text;
     }
-    drawImgFromlocal(gCurrImage.url)
+    drawImgFromlocal()
 }
 
 function onSubmit() {
@@ -123,17 +132,23 @@ function onFontSizeChange(isIncrease) {
     fontSize = (isIncrease) ? fontSize + 1 : fontSize - 1;
     const newFont = fontSize + 'px ' + oldFontArray[1];
     getCurrLine().font = newFont;
-    drawImgFromlocal(gCurrImage.url)
+    drawImgFromlocal()
 }
 
 function onMoveText(isUp) {
     var currLine = getCurrLine();
-    if (isUp) currLine.currPosition.y -= 3;
-    else currLine.currPosition.y += 3;
+    if (isOutCanvas(currLine.currPosition.x, currLine.currPosition.y)) return;
+    if (isUp) {
+        if (isOutCanvas(currLine.currPosition.x, currLine.currPosition.y - 3)) return;
+        currLine.currPosition.y -= 3;
+    } else {
+        if (isOutCanvas(currLine.currPosition.x, currLine.currPosition.y + 3)) return;
+        currLine.currPosition.y += 3;
+    }
     const y = currLine.currPosition.y;
     const x = currLine.currPosition.x;
     updateMemeLocation(x, y);
-    drawImgFromlocal(gCurrImage.url);
+    drawImgFromlocal();
 }
 
 function onSwitchLine() {
@@ -144,9 +159,10 @@ function onAlign(align) {
     if (!getCurrLine()) return;
     var currLine = getCurrLine();
     var canvasWidth = document.getElementById('canvas').width;
+    console.log('align', align);
     switch (align) {
         case 'left':
-            currLine.currPosition.x = canvasWidth / 11.25;
+            currLine.currPosition.x = gCtx.measureText(currLine.txt).width / 2;
             currLine.align = 'left';
             break;
         case 'center':
@@ -154,27 +170,28 @@ function onAlign(align) {
             currLine.align = 'center';
             break;
         case 'right':
-            currLine.currPosition.x = canvasWidth / 1.097;
+            currLine.currPosition.x = canvasWidth - gCtx.measureText(currLine.txt).width / 2;
             currLine.align = 'right';
             break;
     }
-    drawImgFromlocal(gCurrImage.url);
+    console.log(currLine.currPosition)
+    drawImgFromlocal();
 }
 
 function onDeleteLine() {
     if (!getCurrLine()) return;
     var lines = getLines();
     lines.splice(getMeme().selectedLineIdx, 1);
-    drawImgFromlocal(gCurrImage.url);
+    drawImgFromlocal();
     updateCurrLine();
 }
 
 function onMarkToggle(checkbox) {
-    if (checkbox.checked) drawImgFromlocal(gCurrImage.url);
-    else drawImgFromlocal(gCurrImage.url);
+    if (checkbox.checked) drawImgFromlocal();
+    else drawImgFromlocal();
 }
 
-function downloadCanvas(elLink) {
+function onDownloadCanvas(elLink) {
     const data = gElCanvas.toDataURL();
     elLink.href = data;
 }
@@ -183,6 +200,9 @@ function isMarkChecked() {
     return document.querySelector('.mark-check').checked;
 }
 
+
+
+///---GETTERS---///
 function getContext() {
     return gCtx;
 }
@@ -203,6 +223,8 @@ function getCurrImage() {
     return gCurrImage;
 }
 
+
+///---LISTENERS---///
 document.addEventListener("keyup", function(event) {
     if (event.code === 'Enter' && gIsOnCanvas) {
         onAddText();
@@ -230,7 +252,69 @@ document.addEventListener("keydown", function(event) {
     }
 });
 
+function addMouseListeners() {
+    gElCanvas.addEventListener('mousemove', onMove)
+    gElCanvas.addEventListener('mousedown', onDown)
+    gElCanvas.addEventListener('mouseup', onUp)
+}
 
-function updateValue() {
-    console.log('true')
+function addTouchListeners() {
+    gElCanvas.addEventListener('touchmove', onMove)
+    gElCanvas.addEventListener('touchstart', onDown)
+    gElCanvas.addEventListener('touchend', onUp)
+}
+
+///---MOUSE---///
+
+function onDown(ev) {
+    const pos = getEvPos(ev);
+    const lines = getLines();
+    for (var i = 0; i < lines.length; i++) {
+        if (isLineClicked(pos, lines[i])) {
+            setCurrLine(i);
+            gIsDrag = true;
+            gStartPos = pos;
+        }
+    }
+}
+
+function onMove(ev) {
+    if (!gIsDrag) return;
+    const pos = getEvPos(ev);
+    const dx = pos.x - gStartPos.x;
+    const dy = pos.y - gStartPos.y;
+    gStartPos = pos;
+    getCurrLine().currPosition.x += dx;
+    getCurrLine().currPosition.y += dy;
+    drawImgFromlocal();
+    onSubmit();
+}
+
+function onUp() {
+    gIsDrag = false;
+}
+
+
+function getEvPos(ev) {
+    var pos = {
+        x: ev.offsetX,
+        y: ev.offsetY
+    }
+    if (gTouchEvs.includes(ev.type)) {
+        ev.preventDefault()
+        ev = ev.changedTouches[0]
+        pos = {
+            x: ev.pageX - ev.target.offsetLeft - ev.target.clientLeft,
+            y: ev.pageY - ev.target.offsetTop - ev.target.clientTop
+        }
+    }
+    return pos
+}
+
+function isLineClicked(mousePos, line) {
+    const linePos = line.currPosition;
+    const textWidth = gCtx.measureText(line.txt).width;
+    const isXGood = mousePos.x >= linePos.x - textWidth / 2 && mousePos.x <= linePos.x + textWidth / 2;
+    const isYGood = mousePos.y >= linePos.y - getCurrFontSize() && mousePos.y <= linePos.y;
+    return (isXGood && isYGood);
 }

@@ -36,7 +36,12 @@ function getMeme() {
 function updateCurrLine() {
     if (gMeme.selectedLineIdx >= getLines().length - 1) gMeme.selectedLineIdx = 0;
     else if (gMeme.lines.length > 1) gMeme.selectedLineIdx++;
-    drawImgFromlocal(gCurrImage.url);
+    drawImgFromlocal();
+}
+
+function setCurrLine(lineIdx) {
+    gMeme.selectedLineIdx = lineIdx;
+    drawImgFromlocal();
 }
 
 function getCurrLine() {
