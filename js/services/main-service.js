@@ -19,6 +19,8 @@ var gImgs = [{ id: 1, url: 'images/gallery/trump.jpg', keywords: ['funny'] },
     { id: 18, url: 'images/gallery/zadik.jpg', keywords: ['funny'] },
 ];
 
+var gFilterBy = 'ALL';
+
 
 function getImages() {
     return gImgs;
@@ -47,4 +49,17 @@ function getCurrFontSize() {
 function isOutCanvas(y) {
     var fontSize = +getCurrLine().font.split('p')[0];
     return y - fontSize + 5 < 0 || y > getCanvas().height;
+}
+
+function getImagesToDisplay(isFromGallery) {
+    if (gFilterBy === 'ALL') return gImgs;
+    const images = gImgs.filter(function(image) {
+        return image.keywords.includes(gFilterBy);
+    })
+    return images;
+}
+
+
+function setFilter(filter) {
+    gFilterBy = filter;
 }

@@ -3,34 +3,26 @@ var gElCanvas;
 var gCtx;
 var gCurrImage;
 var gIsOnCanvas;
-var gIsNewLine
-var gIsDrag
+var gIsNewLine = true;
+var gIsDrag = false;
 var gStartPos;
 const gTouchEvs = ['touchstart', 'touchmove', 'touchend']
 
-
-function init() {
-    renderGallery();
-    gIsNewLine = true;
-    gIsDrag = false;
-}
-
-
 ///---RENDERING---///
 function renderGallery() {
-    const images = getImages();
+    const images = getImagesToDisplay();
     var strHtmls = `
     <div class="filtering flex">
         <form>
-            <input type="text" placeholder="Enter search keyword">
-            <img src="images/search-icon.png" alt="" class="search-img" onclick="search()" />
+            <input class="filter-input" type="text" placeholder="Enter search keyword">
+            <img src="images/search-icon.png" alt="" class="search-img" onclick="onSetFilter()" />
         </form>
         <ul class="clear-list flex space-between">
-            <li>funny</li>
-            <li>shocked</li>
-            <li>animals</li>
-            <li>children</li>
-            <li>listening</li>
+            <li class="funny">funny</li>
+            <li class="shocked">shocked</li>
+            <li class="animals">animals</li>
+            <li class="children">children</li>
+            <li class="listening">listening</li>
         </ul>
     </div> `;
 
@@ -110,6 +102,11 @@ function renderCanvas(elImage) {
 
 
 ///---BUTTONS---///
+function onShowGallery() {
+    setFilter('ALL');
+    renderGallery();
+}
+
 function onAddText(e) {
     const text = e.target.value;
     const currLine = getCurrLine();
@@ -333,4 +330,10 @@ function resizeCanvas() {
     const elContainer = document.querySelector('.canvas-container')
     gElCanvas.width = elContainer.offsetWidth
     gElCanvas.height = elContainer.offsetHeight
+}
+
+function onSetFilter() {
+    const filterBy = document.querySelector('.filter-input').value;
+    setFilter(filterBy);
+    renderGallery();
 }

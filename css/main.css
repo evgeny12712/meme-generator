@@ -120,7 +120,7 @@ header .logo {
 }
 
 .filtering ul li {
-    cursor: pointer;
+    cursor: default;
     align-self: center;
     font-size: 1.875rem;
 }
