@@ -81,6 +81,10 @@ header .logo {
     gap: 50px;
 }
 
+.gallery-btn {
+    padding-block-end: 14px;
+}
+
 
 /* filtering */
 
@@ -141,7 +145,7 @@ header .logo {
 /* gallery */
 
 .gallery {
-    margin-block-start: 100px;
+    margin-block-start: 40px;
     margin-block-end: 100px;
     display: grid;
     justify-content: center;
@@ -154,10 +158,16 @@ header .logo {
     cursor: pointer;
 }
 
+.gallery-image:hover {
+    /* border: 5px solid yellow;
+    box-shadow: 0px 0px 29px -4px yellow; */
+}
+
 
 /* canvas */
 
 .main-canvas {
+    display: none;
     margin: 25px 130px 25px 50px;
     gap: 100px;
     justify-content: center;
@@ -266,6 +276,7 @@ header .logo {
 }
 
 .footer .logo {
+    cursor: pointer;
     margin-block-start: 70px;
 }
 
@@ -299,6 +310,7 @@ header .logo {
     /* filtering */
     .filtering {
         max-width: 840px;
+        display: flex;
         flex-direction: column;
         justify-content: center;
     }
@@ -346,6 +358,7 @@ header .logo {
     }
     /* canvas */
     .main-canvas {
+        display: none;
         margin: 25px 130px 25px 50px;
         flex-direction: column;
     }

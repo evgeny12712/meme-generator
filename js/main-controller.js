@@ -8,89 +8,30 @@ var gIsDrag = false;
 var gStartPos;
 const gTouchEvs = ['touchstart', 'touchmove', 'touchend']
 
+
 ///---RENDERING---///
 function renderGallery() {
-    const images = getImagesToDisplay();
-    var strHtmls = `
-    <div class="filtering flex">
-        <form>
-            <input class="filter-input" type="text" placeholder="Enter search keyword">
-            <img src="images/search-icon.png" alt="" class="search-img" onclick="onSetFilter()" />
-        </form>
-        <ul class="clear-list flex space-between">
-            <li class="funny">funny</li>
-            <li class="shocked">shocked</li>
-            <li class="animals">animals</li>
-            <li class="children">children</li>
-            <li class="listening">listening</li>
-        </ul>
-    </div> `;
-
-    strHtmls += `<div class="gallery">`;
-
-    strHtmls += images.map(image => {
-        return `<img class="gallery-image" data-id="${image.id}" src="${image.url}" onclick="renderCanvas(this)" />`
+    const images = getImagesToDisplay();;
+    var strHtmls = images.map(image => {
+        return `<div class="gallery-img"><img class="gallery-image" data-id="${image.id}" src="${image.url}" onclick="renderCanvas(this)" /></div>`
     }).join('');
-
-    strHtmls += `</div>`;
-
-    strHtmls += `
-    <section class="about-me flex">
-        <img class="my-image" src="images/me.jpg" />
-        <div class="my-about-me">
-            <h4>Evgeny Mashkevich</h4>
-            <p>is a fictional character, one of the six main characters who appears on the American sitcom Friends (1994 –2004). Created by David Crane and Marta Kauffman</p>
-            <div class="social-buttons">
-                <button class="linkedin"><img src="images/social-media/linkedin.png"/></button>
-                <button class="facebook"><img src="images/social-media/facebook.png"/></button>
-                <button class="github"><img src="images/social-media/github.png"/></button>
-            </div>
-        </div>
-    </section>`;
-    document.querySelector('.main-container').innerHTML = strHtmls;
+    document.querySelector('.gallery').innerHTML += strHtmls;
+    document.querySelector('.main-canvas').style.display = 'none';
+    document.querySelector('.filtering').style.display = 'flex';
+    document.querySelector('.about-me').style.display = 'flex';
+    document.querySelector('.gallery-btn').style.borderBottom = '2px solid black';
     gIsOnCanvas = false;
     resetMeme();
 }
 
 function renderCanvas(elImage) {
-    const strHtmls = `
-    <main class="main-canvas flex">
-        <div class="canvas-container">
-            <canvas id="canvas" class="canvas" height="450" width="450"></canvas>
-        </div>
-        <div class="control">
-            <input id="text-input" class="text-input" type="text"" placeholder="Enter text" onfocusout="onSubmit()" autofocus>
-            <button class="add-text-btn" onclick="onSubmit()"><img src="images/canvas-controllers/add.png"></button>
-            <button class="up-down-arrows-btn" onclick="onSwitchLine()"><img src="images/canvas-controllers/up-and-down-opposite-double-arrows-side-by-side.png"/></button>
-            <button class="up-btn" onclick="onMoveText(true)"><img src="images/canvas-controllers/up-arrow.png"/></button>
-            <button class="down-btn" onclick="onMoveText(false)"><img src="images/canvas-controllers/down-arrow.png"/></button>
-            <button class="delete-btn" onclick="onDeleteLine()"><img src="images/canvas-controllers/trash.png"></button>
-            <button class="font-increase-btn" onclick="onFontSizeChange(true)"><img src="images/canvas-controllers/increase font - icon.png"></button>
-            <button class="font-decrease-btn" onclick="onFontSizeChange(false)"><img src="images/canvas-controllers/decrease font - icon.png"></button>
-            <input type='color' class="font-color-btn" value = "#FFFFFF"/>
-            <div class="mark-checkbox">
-                <label for="mark-check">Mark Line</label>
-                <input type="checkbox" class="mark-check" id="mark-check" name="mark-check" onchange="onMarkToggle(this)"checked>
-            </div>
-            <button class="align-left-btn" onclick="onAlign('left')"><img src="images/canvas-controllers/align-to-left.png"></button>
-            <button class="align-center-btn" onclick="onAlign('center')"><img src="images/canvas-controllers/center-text-alignment.png"></button>
-            <button class="align-right-btn" onclick="onAlign('right')"><img src="images/canvas-controllers/align-to-right.png"></button>
-            <a href="#" class="download-btn" onclick="onDownloadCanvas(this)" download="myMeme" ><img src="images/canvas-controllers/download.png"></a>
-            <select class="fonts-selector" id="fonts">
-                <option value="Impact">Impact</option>
-                <option value="Arial">Arial</option>
-                <option value="Tahoma">Tahoma</option>
-                <option value="Big Caslon">Big Caslon</option>
-                <option value="Consolas">Consolas</option>
-                <option value="Fantasy">Fantasy</option>
-                <option value="David">David</option>
-            </select>
-        </div>
-    </main>
-    `
-    document.querySelector('.main-container').innerHTML = strHtmls;
-    document.querySelector('.text-input').addEventListener('input', onAddText);
-    gElCanvas = document.getElementById('canvas');
+    document.querySelector('.filtering').style.display = 'none';
+    document.querySelector('.about-me').style.display = 'none';
+    document.querySelector('.gallery').innerHTML = '';
+    document.querySelector('.main-canvas').style.display = 'flex';
+    document.querySelector('.gallery-btn').style.borderBottom = '0';
+    document.querySelector('.font-color-btn').value = '#FFFFFF';
+    gElCanvas = document.querySelector('.canvas');
     gCtx = gElCanvas.getContext('2d');
     if (elImage) gCurrImage = getImageById(+elImage.dataset.id);
     resizeCanvas();
@@ -100,6 +41,15 @@ function renderCanvas(elImage) {
     addTouchListeners()
 }
 
+function toggleMainSection() {
+    if (document.querySelector('.main-canvas').style.display === 'none') {
+        document.querySelector('.filtering').style.display = 'none';
+        document.querySelector('.about-me').style.display = 'none';
+        document.querySelector('.gallery').style.display = 'none';
+    }
+
+}
+
 
 ///---BUTTONS---///
 function onShowGallery() {
@@ -107,15 +57,18 @@ function onShowGallery() {
     renderGallery();
 }
 
-function onAddText(e) {
-    const text = e.target.value;
-    const currLine = getCurrLine();
-    if (gIsNewLine) {
-        updateMeme(gCurrImage, text, { x: getCanvas().width / 2, y: getY() });
+function onAddText(elInput) {
+    var txt = elInput.value;
+    var currLine = getCurrLine();
+    if (!currLine && getLines().length) currLine = setCurrLine(getLines().length - 1);
+    if (gIsNewLine && !currLine) {
+        addLine(gCurrImage, txt, { x: getCanvas().width / 2, y: getY() });
         updateCurrLine();
         gIsNewLine = false;
+        console.log('gMeme.selectedLineIdx', gMeme.selectedLineIdx);
+        console.log('getLines()', getLines());
     } else {
-        currLine.txt = text;
+        currLine.txt = txt;
     }
     drawImgFromlocal()
 }
@@ -124,14 +77,18 @@ function onSubmit() {
     var elInput = document.querySelector('.text-input');
     elInput.value = '';
     gIsNewLine = true;
+    setCurrLine(null);
+    drawImgFromlocal(true);
 }
 
 function onFontSizeChange(isIncrease) {
-    var oldFontArray = getCurrLine().font.split(' ');
+    var currLine = getCurrLine();
+    if (!currLine) return;
+    var oldFontArray = currLine.font.split(' ');
     var fontSize = +oldFontArray[0].substring(0, oldFontArray[0].length - 2);
     fontSize = (isIncrease) ? fontSize + 1 : fontSize - 1;
     const newFont = fontSize + 'px ' + oldFontArray[1];
-    getCurrLine().font = newFont;
+    currLine.font = newFont;
     drawImgFromlocal()
 }
 
@@ -151,6 +108,13 @@ function onMoveText(isUp) {
     drawImgFromlocal();
 }
 
+function onColorChange() {
+    var currLine = getCurrLine();
+    if (!currLine) return;
+    currLine.color = getColorFromPicker();
+    drawImgFromlocal();
+}
+
 function onSwitchLine() {
     updateCurrLine();
 }
@@ -158,7 +122,7 @@ function onSwitchLine() {
 function onAlign(align) {
     if (!getCurrLine()) return;
     var currLine = getCurrLine();
-    var canvasWidth = document.getElementById('canvas').width;
+    var canvasWidth = document.querySelector('.canvas').width;
     console.log('align', align);
     switch (align) {
         case 'left':
@@ -186,21 +150,20 @@ function onDeleteLine() {
     updateCurrLine();
 }
 
-function onMarkToggle(checkbox) {
-    if (checkbox.checked) drawImgFromlocal();
-    else drawImgFromlocal();
-}
-
-function onDownloadCanvas(elLink) {
+function onDownloadCanvas(elLink, ev) {
+    gIsDownload = true;
+    onMarkToggle(false);
     const data = gElCanvas.toDataURL();
     elLink.href = data;
+    gIsDownload = false;
 }
 
-function isMarkChecked() {
-    return document.querySelector('.mark-check').checked;
+function onSetFilter() {
+    const filterBy = document.querySelector('.filter-input').value;
+    if (!filterBy) return;
+    setFilter(filterBy);
+    renderGallery();
 }
-
-
 
 ///---GETTERS---///
 function getContext() {
@@ -212,10 +175,10 @@ function getCanvas() {
 }
 
 function getCurrFont() {
-    return document.getElementById('fonts').value;
+    return document.querySelector('.fonts-selector').value;
 }
 
-function getCurrColor() {
+function getColorFromPicker() {
     return document.querySelector('.font-color-btn').value;
 }
 
@@ -257,7 +220,6 @@ window.addEventListener('resize', () => {
     renderCanvas();
 })
 
-
 function addMouseListeners() {
     gElCanvas.addEventListener('mousemove', onMove)
     gElCanvas.addEventListener('mousedown', onDown)
@@ -270,14 +232,15 @@ function addTouchListeners() {
     gElCanvas.addEventListener('touchend', onUp)
 }
 
-///---MOUSE---///
 
+///---MOUSE---///
 function onDown(ev) {
     const pos = getEvPos(ev);
     const lines = getLines();
     for (var i = 0; i < lines.length; i++) {
         if (isLineClicked(pos, lines[i])) {
             setCurrLine(i);
+            document.querySelector('.text-input').value = getCurrLine().txt;
             gIsDrag = true;
             gStartPos = pos;
         }
@@ -293,12 +256,16 @@ function onMove(ev) {
     getCurrLine().currPosition.x += dx;
     getCurrLine().currPosition.y += dy;
     drawImgFromlocal();
-    onSubmit();
+    document.querySelector('.canvas').style.cursor = 'grabbing';
 }
 
 function onUp() {
+    document.querySelector('.canvas').style.cursor = 'auto';
     gIsDrag = false;
 }
+
+
+
 
 
 function getEvPos(ev) {
@@ -318,22 +285,16 @@ function getEvPos(ev) {
 }
 
 function isLineClicked(mousePos, line) {
+    const fontSize = +line.font.split('p')[0];
     const linePos = line.currPosition;
     const textWidth = gCtx.measureText(line.txt).width;
     const isXGood = mousePos.x >= linePos.x - textWidth / 2 && mousePos.x <= linePos.x + textWidth / 2;
-    const isYGood = mousePos.y >= linePos.y - getCurrFontSize() && mousePos.y <= linePos.y;
+    const isYGood = mousePos.y >= linePos.y - fontSize && mousePos.y <= linePos.y;
     return (isXGood && isYGood);
 }
-
 
 function resizeCanvas() {
     const elContainer = document.querySelector('.canvas-container')
     gElCanvas.width = elContainer.offsetWidth
     gElCanvas.height = elContainer.offsetHeight
-}
-
-function onSetFilter() {
-    const filterBy = document.querySelector('.filter-input').value;
-    setFilter(filterBy);
-    renderGallery();
 }

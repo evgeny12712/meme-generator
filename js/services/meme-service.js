@@ -7,10 +7,10 @@ var gMeme = {
     lines: []
 }
 
-function updateMeme(image, txt = "",
+function addLine(image, txt = "",
     currPosition = { x: getCanvas().width / 2, y: getCanvas().height / 5 },
     font = '40px ' + getCurrFont(),
-    color = getCurrColor(),
+    color = getColorFromPicker(),
     align = "center") {
     gMeme.lines.push({ txt, currPosition, font, color, align });
     gMeme.selectedImgId = image.id;
@@ -46,6 +46,10 @@ function setCurrLine(lineIdx) {
 
 function getCurrLine() {
     return gMeme.lines[gMeme.selectedLineIdx];
+}
+
+function getCurrLineIdx() {
+    return gMeme.selectedLineIdx;
 }
 
 function getLines() {

@@ -1,5 +1,5 @@
 'use strict';
 
-function init() {
+function onInit() {
     renderGallery();
 }

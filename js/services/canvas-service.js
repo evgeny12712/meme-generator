@@ -10,12 +10,13 @@ function drawText(currLine) {
     ctx.font = currLine.font;
     ctx.fillText(currLine.txt, currLine.currPosition.x, currLine.currPosition.y);
     ctx.strokeText(currLine.txt, currLine.currPosition.x, currLine.currPosition.y);
-    getCurrColor();
+    getColorFromPicker();
 }
 
 function drawRect() {
-    var ctx = getContext();
     const currLine = getCurrLine();
+    if (!currLine) return;
+    var ctx = getContext();
     const fontSize = getCurrFontSize();
     ctx.font = currLine.font;
     const x = (currLine.currPosition.x - ctx.measureText(currLine.txt).width / 2) - fontSize / 8;
@@ -27,15 +28,14 @@ function drawRect() {
     ctx.stroke();
 }
 
-function drawImgFromlocal() {
+function drawImgFromlocal(isDisableRect) {
     const ctx = getContext();
     const elCanvas = getCanvas();
     const img = new Image()
     img.src = gCurrImage.url;
     img.onload = () => {
-            ctx.drawImage(img, 0, 0, elCanvas.width, elCanvas.height); //img,x,y,xend,yend
-            drawTexts();
-            if (getLines().length && isMarkChecked()) drawRect();
-        }
-        // resizeCanvas();
+        ctx.drawImage(img, 0, 0, elCanvas.width, elCanvas.height); //img,x,y,xend,yend
+        drawTexts();
+        if (getLines().length && !isDisableRect) drawRect();
+    }
 }

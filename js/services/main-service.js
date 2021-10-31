@@ -43,6 +43,7 @@ function getY() {
 }
 
 function getCurrFontSize() {
+    if (!getCurrLine()) return;
     return +getCurrLine().font.split('p')[0];
 }
 
@@ -58,7 +59,6 @@ function getImagesToDisplay(isFromGallery) {
     })
     return images;
 }
-
 
 function setFilter(filter) {
     gFilterBy = filter;
