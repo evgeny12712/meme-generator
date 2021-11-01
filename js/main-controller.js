@@ -170,6 +170,16 @@ function onFontSelect(value) {
     drawImgFromlocal();
 }
 
+function onLoadGallery() {
+    gFilterBy = 'ALL';
+    renderGallery();
+}
+
+function onGotoTop() {
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+}
+
 ///---GETTERS---///
 function getContext() {
     return gCtx;
@@ -215,6 +225,7 @@ document.addEventListener("keydown", function(event) {
 });
 
 window.addEventListener('resize', () => {
+    if (!gIsOnCanvas) return;
     resizeCanvas();
     renderCanvas();
 })
