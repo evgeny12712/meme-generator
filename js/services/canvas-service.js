@@ -36,6 +36,8 @@ function drawImgFromlocal(isDisableRect) {
     img.onload = () => {
         ctx.drawImage(img, 0, 0, elCanvas.width, elCanvas.height); //img,x,y,xend,yend
         drawTexts();
-        if (getLines().length && !isDisableRect) drawRect();
+        if (getLines().length && !isDisableRect) {
+            drawRect();
+        }
     }
 }

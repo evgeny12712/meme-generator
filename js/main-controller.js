@@ -149,11 +149,8 @@ function onDeleteLine() {
 }
 
 function onDownloadCanvas(elLink, ev) {
-    gIsDownload = true;
-    onMarkToggle(false);
     const data = gElCanvas.toDataURL();
     elLink.href = data;
-    gIsDownload = false;
 }
 
 function onSetFilter(elLi) {
@@ -163,6 +160,14 @@ function onSetFilter(elLi) {
     if (!filterBy) return;
     setFilter(filterBy);
     renderGallery();
+}
+
+function onFontSelect(value) {
+    var currLine = getCurrLine();
+    var currFontSize = currLine.font.split(' ')[0];
+    const newFont = currFontSize + ' ' + value;
+    currLine.font = newFont;
+    drawImgFromlocal();
 }
 
 ///---GETTERS---///

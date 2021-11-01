@@ -51,7 +51,7 @@
                 <button class="align-center-btn " onclick="onAlign( 'center') "><img src="images/canvas-controllers/center-text-alignment.png "></button>
                 <button class="align-right-btn " onclick="onAlign( 'right') "><img src="images/canvas-controllers/align-to-right.png "></button>
                 <a href="# " class="download-btn " onclick="onDownloadCanvas(this,event) " download="myMeme "><img src="images/canvas-controllers/download.png "></a>
-                <select class="fonts-selector ">
+                <select class="fonts-selector" onchange="onFontSelect(this.value)">
                     <option>Impact</option>
                     <option>Arial</option>
                     <option>Tahoma</option>
