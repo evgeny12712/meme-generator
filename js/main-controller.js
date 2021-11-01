@@ -15,11 +15,12 @@ function renderGallery() {
     var strHtmls = images.map(image => {
         return `<div class="gallery-img"><img class="gallery-image" data-id="${image.id}" src="${image.url}" onclick="renderCanvas(this)" /></div>`
     }).join('');
-    document.querySelector('.gallery').innerHTML += strHtmls;
+    document.querySelector('.gallery').innerHTML = strHtmls;
     document.querySelector('.main-canvas').style.display = 'none';
     document.querySelector('.filtering').style.display = 'flex';
     document.querySelector('.about-me').style.display = 'flex';
     document.querySelector('.gallery-btn').style.borderBottom = '2px solid black';
+    document.querySelector('.text-input').value = '';
     gIsOnCanvas = false;
     resetMeme();
 }
@@ -65,8 +66,6 @@ function onAddText(elInput) {
         addLine(gCurrImage, txt, { x: getCanvas().width / 2, y: getY() });
         updateCurrLine();
         gIsNewLine = false;
-        console.log('gMeme.selectedLineIdx', gMeme.selectedLineIdx);
-        console.log('getLines()', getLines());
     } else {
         currLine.txt = txt;
     }
@@ -94,6 +93,7 @@ function onFontSizeChange(isIncrease) {
 
 function onMoveText(isUp) {
     var currLine = getCurrLine();
+    if (!currLine) return;
     if (isOutCanvas(currLine.currPosition.y)) return;
     if (isUp) {
         if (isOutCanvas(currLine.currPosition.y - 3)) return;
@@ -123,7 +123,6 @@ function onAlign(align) {
     if (!getCurrLine()) return;
     var currLine = getCurrLine();
     var canvasWidth = document.querySelector('.canvas').width;
-    console.log('align', align);
     switch (align) {
         case 'left':
             currLine.currPosition.x = gCtx.measureText(currLine.txt).width / 2;
@@ -138,7 +137,6 @@ function onAlign(align) {
             currLine.align = 'right';
             break;
     }
-    console.log(currLine.currPosition)
     drawImgFromlocal();
 }
 
@@ -158,8 +156,10 @@ function onDownloadCanvas(elLink, ev) {
     gIsDownload = false;
 }
 
-function onSetFilter() {
-    const filterBy = document.querySelector('.filter-input').value;
+function onSetFilter(elLi) {
+    var filterBy;
+    if (!elLi) filterBy = document.querySelector('.filter-input').value;
+    else filterBy = elLi.innerText;
     if (!filterBy) return;
     setFilter(filterBy);
     renderGallery();
@@ -188,23 +188,14 @@ function getCurrImage() {
 
 
 ///---LISTENERS---///
-document.addEventListener("keyup", function(event) {
-    if (event.code === 'Enter' && gIsOnCanvas) {
-        onSubmit();
-    }
-});
-
 document.addEventListener("keydown", function(event) {
+    const currLine = getCurrLine();
     if (event.code === 'ArrowUp' && gIsOnCanvas) {
         onMoveText(true);
     }
     if (event.code === 'ArrowDown' && gIsOnCanvas) {
         onMoveText(false);
     }
-});
-
-document.addEventListener("keydown", function(event) {
-    const currLine = getCurrLine();
     if (event.code === 'ArrowRight' && gIsOnCanvas) {
         if (currLine.align === 'left') onAlign('center');
         else onAlign('right');
@@ -212,6 +203,9 @@ document.addEventListener("keydown", function(event) {
     if (event.code === 'ArrowLeft' && gIsOnCanvas) {
         if (currLine.align === 'right') onAlign('center');
         else onAlign('left');
+    }
+    if (event.code === 'Enter' && gIsOnCanvas) {
+        onSubmit();
     }
 });
 
@@ -263,9 +257,6 @@ function onUp() {
     document.querySelector('.canvas').style.cursor = 'auto';
     gIsDrag = false;
 }
-
-
-
 
 
 function getEvPos(ev) {

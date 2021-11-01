@@ -52,12 +52,22 @@ function isOutCanvas(y) {
     return y - fontSize + 5 < 0 || y > getCanvas().height;
 }
 
-function getImagesToDisplay(isFromGallery) {
+function getImagesToDisplay() {
     if (gFilterBy === 'ALL') return gImgs;
+    updateFilterTitle(gFilterBy)
     const images = gImgs.filter(function(image) {
         return image.keywords.includes(gFilterBy);
     })
     return images;
+}
+
+function updateFilterTitle(filterName) {
+    var elFiltTitle = document.querySelector('.' + filterName);
+    if (!elFiltTitle) return;
+    var currFontSize = window.getComputedStyle(elFiltTitle).fontSize;
+    currFontSize = +currFontSize.split('p')[0];
+    currFontSize += 2;
+    elFiltTitle.style.fontSize = currFontSize + 'px';
 }
 
 function setFilter(filter) {
